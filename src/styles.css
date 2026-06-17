@@ -297,8 +297,10 @@ input {
   border: 1px solid #cbb99f;
   border-radius: 8px;
   color: #172033;
+  min-width: 0;
   min-height: 46px;
   padding: 0 12px;
+  width: 100%;
 }
 
 select:hover,

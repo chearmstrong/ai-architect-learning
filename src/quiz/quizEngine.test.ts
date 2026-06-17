@@ -96,7 +96,7 @@ describe("quizEngine", () => {
     expect(session.questions.map((question) => question.id)).toEqual(["q2", "q3", "q4"]);
   });
 
-  it("randomises answer choice order while preserving the correct choice id", () => {
+  it("randomises answer choice order and relabels the correct choice for the displayed order", () => {
     const session = createQuizSession({
       questions,
       mode: "practice",
@@ -107,11 +107,20 @@ describe("quizEngine", () => {
       random: () => 0,
     });
 
-    expect(session.questions[0].choices.map((choice) => choice.id)).toEqual(["b", "c", "d", "a"]);
-    expect(session.questions[0].correctChoiceId).toBe("a");
+    expect(session.questions[0].choices.map((choice) => choice.id)).toEqual(["a", "b", "c", "d"]);
+    expect(session.questions[0].choices.map((choice) => choice.text)).toEqual([
+      "Let subagents communicate privately.",
+      "Store hidden state in each subagent.",
+      "Avoid explicit task boundaries.",
+      "Route all subagent work through a coordinator.",
+    ]);
+    expect(session.questions[0].correctChoiceId).toBe("d");
 
-    const updated = answerQuestion(session, "a", new Date("2026-06-16T10:01:00.000Z"));
+    const updated = answerQuestion(session, "d", new Date("2026-06-16T10:01:00.000Z"));
     expect(updated.answers[session.questions[0].id]?.isCorrect).toBe(true);
+    expect(session.questions[0].choiceExplanations.d).toBe(
+      "This is correct because coordinator-mediated delegation preserves observability.",
+    );
   });
 
   it("creates distinct default session ids for the same millisecond", () => {

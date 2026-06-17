@@ -46,6 +46,28 @@ function shuffleItems<T>(items: T[], random: () => number): T[] {
   return shuffled;
 }
 
+function randomizeQuestionChoices(question: Question, random: () => number): Question {
+  const originalCorrectChoice = question.choices.find((choice) => choice.id === question.correctChoiceId);
+  const choiceIds = question.choices.map((choice) => choice.id);
+  const choiceExplanations: Question["choiceExplanations"] = {};
+  const choices = shuffleItems(question.choices, random).map((choice, index) => {
+    const id = choiceIds[index];
+    choiceExplanations[id] = question.choiceExplanations[choice.id];
+    return {
+      ...choice,
+      id,
+    };
+  });
+  const correctChoice = choices.find((choice) => choice.text === originalCorrectChoice?.text);
+
+  return {
+    ...question,
+    choices,
+    correctChoiceId: correctChoice?.id ?? question.correctChoiceId,
+    choiceExplanations,
+  };
+}
+
 export function createQuizSession(input: CreateQuizSessionInput): QuizSession {
   const filtered =
     input.domain === "all"
@@ -54,10 +76,7 @@ export function createQuizSession(input: CreateQuizSessionInput): QuizSession {
   const random = input.random ?? Math.random;
   const selectedQuestions = shuffleItems(filtered, random)
     .slice(0, input.count)
-    .map((question) => ({
-      ...question,
-      choices: shuffleItems(question.choices, random),
-    }));
+    .map((question) => randomizeQuestionChoices(question, random));
 
   return {
     id: input.sessionId ?? createSessionId(input.now),
