@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { getQuestionCountForDomain } from "../data/domains";
 import { QuizSetup } from "./QuizSetup";
 
 describe("QuizSetup", () => {
@@ -29,7 +30,18 @@ describe("QuizSetup", () => {
     expect(onStart).toHaveBeenCalledWith({
       mode: "practice",
       domain: "agent-architecture",
-      count: 6,
+      count: getQuestionCountForDomain("agent-architecture"),
     });
+  });
+
+  it("shows the maximum question count for the selected domain", async () => {
+    const onStart = vi.fn();
+    render(<QuizSetup maxCount={60} onCancel={() => undefined} onStart={onStart} />);
+
+    expect(screen.getByText("Max: 60")).toBeInTheDocument();
+
+    await userEvent.selectOptions(screen.getByLabelText("Domain"), "agent-architecture");
+
+    expect(screen.getByText(`Max: ${getQuestionCountForDomain("agent-architecture")}`)).toBeInTheDocument();
   });
 });

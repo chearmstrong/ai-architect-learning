@@ -47,6 +47,13 @@ const questions: Question[] = [
   },
 ];
 
+const orderedQuestions: Question[] = [
+  { ...questions[0], id: "q1", domain: "agent-architecture" },
+  { ...questions[0], id: "q2", domain: "agent-architecture" },
+  { ...questions[0], id: "q3", domain: "agent-architecture" },
+  { ...questions[0], id: "q4", domain: "agent-architecture" },
+];
+
 describe("quizEngine", () => {
   it("creates a practice session filtered by domain and count", () => {
     const session = createQuizSession({
@@ -73,6 +80,38 @@ describe("quizEngine", () => {
     });
 
     expect(session.id).toBe("session-custom-1");
+  });
+
+  it("randomises selected question order using the provided random source", () => {
+    const session = createQuizSession({
+      questions: orderedQuestions,
+      mode: "practice",
+      domain: "agent-architecture",
+      count: 3,
+      now: new Date("2026-06-16T10:00:00.000Z"),
+      sessionId: "session-custom-1",
+      random: () => 0,
+    });
+
+    expect(session.questions.map((question) => question.id)).toEqual(["q2", "q3", "q4"]);
+  });
+
+  it("randomises answer choice order while preserving the correct choice id", () => {
+    const session = createQuizSession({
+      questions,
+      mode: "practice",
+      domain: "agent-architecture",
+      count: 1,
+      now: new Date("2026-06-16T10:00:00.000Z"),
+      sessionId: "session-custom-1",
+      random: () => 0,
+    });
+
+    expect(session.questions[0].choices.map((choice) => choice.id)).toEqual(["b", "c", "d", "a"]);
+    expect(session.questions[0].correctChoiceId).toBe("a");
+
+    const updated = answerQuestion(session, "a", new Date("2026-06-16T10:01:00.000Z"));
+    expect(updated.answers[session.questions[0].id]?.isCorrect).toBe(true);
   });
 
   it("creates distinct default session ids for the same millisecond", () => {
@@ -162,5 +201,24 @@ describe("quizEngine", () => {
     const answered = answerQuestion(session, session.questions[0].correctChoiceId, new Date("2026-06-16T10:01:00.000Z"));
     const finished = finishSession(answered);
     expect(finished.answers[session.questions[0].id]?.isRevealed).toBe(true);
+  });
+
+  it("finishes early with only answered questions retained for review and progress", () => {
+    const session = createQuizSession({
+      questions: orderedQuestions,
+      mode: "exam",
+      domain: "agent-architecture",
+      count: 3,
+      now: new Date("2026-06-16T10:00:00.000Z"),
+      sessionId: "session-custom-1",
+      random: () => 0.999,
+    });
+
+    const answered = answerQuestion(session, session.questions[0].correctChoiceId, new Date("2026-06-16T10:01:00.000Z"));
+    const finished = finishSession(answered);
+
+    expect(finished.questions.map((question) => question.id)).toEqual(["q1"]);
+    expect(finished.isComplete).toBe(true);
+    expect(finished.answers.q1?.isRevealed).toBe(true);
   });
 });

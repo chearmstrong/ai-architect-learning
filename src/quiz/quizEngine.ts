@@ -24,6 +24,7 @@ export type CreateQuizSessionInput = {
   count: number;
   now: Date;
   sessionId?: string;
+  random?: () => number;
 };
 
 function createSessionId(now: Date): string {
@@ -34,12 +35,29 @@ function createSessionId(now: Date): string {
   return `session-${now.getTime()}-${randomPart}`;
 }
 
+function shuffleItems<T>(items: T[], random: () => number): T[] {
+  const shuffled = [...items];
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+
+  return shuffled;
+}
+
 export function createQuizSession(input: CreateQuizSessionInput): QuizSession {
   const filtered =
     input.domain === "all"
       ? input.questions
       : input.questions.filter((question) => question.domain === input.domain);
-  const selectedQuestions = filtered.slice(0, input.count);
+  const random = input.random ?? Math.random;
+  const selectedQuestions = shuffleItems(filtered, random)
+    .slice(0, input.count)
+    .map((question) => ({
+      ...question,
+      choices: shuffleItems(question.choices, random),
+    }));
 
   return {
     id: input.sessionId ?? createSessionId(input.now),
@@ -86,9 +104,11 @@ export function finishSession(session: QuizSession): QuizSession {
       { ...answer, isRevealed: true },
     ]),
   );
+  const answeredQuestionIds = new Set(Object.keys(revealedAnswers));
 
   return {
     ...session,
+    questions: session.questions.filter((question) => answeredQuestionIds.has(question.id)),
     answers: revealedAnswers,
     isComplete: true,
   };

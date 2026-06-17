@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { getQuestionCountForDomain } from "../data/domains";
 import type { Domain, QuizMode } from "../domain/types";
 
@@ -23,6 +24,9 @@ const domainOptions: Array<{ value: Domain | "all"; label: string }> = [
 ];
 
 export function QuizSetup({ maxCount, onCancel, onStart }: QuizSetupProps) {
+  const [selectedDomain, setSelectedDomain] = useState<Domain | "all">("all");
+  const selectedMaxCount = selectedDomain === "all" ? maxCount : getQuestionCountForDomain(selectedDomain);
+
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -55,7 +59,11 @@ export function QuizSetup({ maxCount, onCancel, onStart }: QuizSetupProps) {
 
       <label>
         Domain
-        <select name="domain" defaultValue="all">
+        <select
+          name="domain"
+          defaultValue="all"
+          onChange={(event) => setSelectedDomain(event.currentTarget.value as Domain | "all")}
+        >
           {domainOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -65,8 +73,19 @@ export function QuizSetup({ maxCount, onCancel, onStart }: QuizSetupProps) {
       </label>
 
       <label>
-        Question count
-        <input required min={1} max={maxCount} name="count" type="number" defaultValue={Math.min(5, maxCount)} />
+        <span className="label-row">
+          Question count
+          <span>Max: {selectedMaxCount}</span>
+        </span>
+        <input
+          aria-label="Question count"
+          required
+          min={1}
+          max={maxCount}
+          name="count"
+          type="number"
+          defaultValue={Math.min(5, maxCount)}
+        />
       </label>
 
       <div className="button-row">

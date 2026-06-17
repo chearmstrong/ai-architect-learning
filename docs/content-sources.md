@@ -28,10 +28,57 @@ This app uses public sources to write original practice questions. Do not copy c
 - Anthropic Claude cookbooks: https://github.com/anthropics/claude-cookbooks
 - Community study guide: https://github.com/paullarionov/claude-certified-architect
 
+## Additional Provider And Standards Sources
+
+Use these sources to keep the bank balanced across provider-specific implementation details and provider-neutral architecture principles.
+
+### OpenAI
+
+- Agents SDK: https://developers.openai.com/api/docs/guides/agents
+- Function calling: https://developers.openai.com/api/docs/guides/function-calling
+- Structured outputs: https://developers.openai.com/api/docs/guides/structured-outputs
+- Prompt engineering: https://developers.openai.com/api/docs/guides/prompt-engineering
+- Working with evals: https://developers.openai.com/api/docs/guides/evals
+- OpenAI Cookbook: https://cookbook.openai.com/
+- Cookbook agents topic: https://developers.openai.com/cookbook/topic/agents
+- Cookbook evals topic: https://developers.openai.com/cookbook/topic/evals
+- Cookbook guardrails topic: https://developers.openai.com/cookbook/topic/guardrails
+- Codex best practices: https://developers.openai.com/codex/learn/best-practices
+- Codex AGENTS.md: https://developers.openai.com/codex/guides/agents-md
+- Codex subagents: https://developers.openai.com/codex/concepts/subagents
+- Codex MCP: https://developers.openai.com/codex/mcp
+
+### Google
+
+- Gemini function calling: https://ai.google.dev/gemini-api/docs/function-calling
+- Gemini structured outputs: https://ai.google.dev/gemini-api/docs/structured-output
+- Gemini grounding with Google Search: https://ai.google.dev/gemini-api/docs/google-search
+
+### Microsoft
+
+- AI agent orchestration patterns: https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns
+- Microsoft Foundry Agent Service: https://learn.microsoft.com/en-us/azure/foundry/agents/overview
+- Semantic Kernel Agent Framework: https://learn.microsoft.com/en-us/semantic-kernel/frameworks/agent/
+
+### AWS
+
+- Amazon Bedrock Agents: https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html
+- Amazon Bedrock Guardrails: https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html
+
+### Standards, Frameworks, And Security
+
+- Model Context Protocol introduction: https://modelcontextprotocol.io/docs/getting-started/intro
+- Model Context Protocol tools specification: https://modelcontextprotocol.io/specification/2025-06-18/server/tools
+- LangGraph overview: https://docs.langchain.com/oss/python/langgraph/overview
+- OWASP Top 10 for LLMs and Gen AI Apps 2025: https://genai.owasp.org/llm-top-10/
+- NIST AI Risk Management Framework: https://www.nist.gov/itl/ai-risk-management-framework
+
 ## Authoring Rules
 
 - Each question must cite at least one public source.
 - Explanations should teach the design principle, not only name the correct answer.
 - Distractors should be plausible architect mistakes.
 - Prefer scenario questions for applied and scenario difficulty.
+- Prefer provider-neutral principles when a topic appears in multiple ecosystems, then cite provider docs as concrete implementations.
+- Keep provider-specific facts in questions only when the source is stable enough for learners to inspect later.
 - Keep all question content original to this repository.

@@ -277,6 +277,20 @@ label {
   margin: 18px 0;
 }
 
+.label-row,
+.quiz-actions {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.label-row span {
+  color: #657083;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
 select,
 input {
   background: #fffaf2;
@@ -371,6 +385,10 @@ input:hover {
   border: 1px solid #dfa48f;
 }
 
+.quiz-actions {
+  margin-top: 18px;
+}
+
 .source-list {
   display: flex;
   flex-wrap: wrap;
@@ -444,7 +462,8 @@ input:hover {
   }
 
   .dashboard-header,
-  .button-row {
+  .button-row,
+  .quiz-actions {
     align-items: stretch;
     flex-direction: column;
   }

@@ -40,6 +40,7 @@ export function QuizView({ session, onAnswer, onEmptyBack, onFinish }: QuizViewP
   const displayedQuestionIndex = shouldShowPreviousAnswer ? session.currentIndex - 1 : session.currentIndex;
   const question = shouldShowPreviousAnswer ? previousQuestion : session.questions[session.currentIndex];
   const answer = question ? session.answers[question.id] : undefined;
+  const canEndEarly = !session.isComplete && session.questions.length > 0;
 
   if (!question) {
     if (session.isComplete && session.questions.length > 0) {
@@ -88,26 +89,33 @@ export function QuizView({ session, onAnswer, onEmptyBack, onFinish }: QuizViewP
 
       {answer ? <Explanation question={question} answer={answer} /> : null}
 
-      {session.isComplete && shouldShowPreviousAnswer ? (
-        <button className="primary-button" onClick={onFinish}>
-          Review session
-        </button>
-      ) : shouldShowPreviousAnswer ? (
-        <button
-          className="primary-button"
-          onClick={() => {
-            if (question) {
-              setDismissedAnswerIds((current) => new Set(current).add(question.id));
-            }
-          }}
-        >
-          Continue
-        </button>
-      ) : session.isComplete ? (
-        <button className="primary-button" onClick={onFinish}>
-          Review session
-        </button>
-      ) : null}
+      <div className="quiz-actions">
+        {session.isComplete && shouldShowPreviousAnswer ? (
+          <button className="primary-button" onClick={onFinish}>
+            Review session
+          </button>
+        ) : shouldShowPreviousAnswer ? (
+          <button
+            className="primary-button"
+            onClick={() => {
+              if (question) {
+                setDismissedAnswerIds((current) => new Set(current).add(question.id));
+              }
+            }}
+          >
+            Continue
+          </button>
+        ) : session.isComplete ? (
+          <button className="primary-button" onClick={onFinish}>
+            Review session
+          </button>
+        ) : null}
+        {canEndEarly ? (
+          <button className="secondary-button" type="button" onClick={onFinish}>
+            End quiz
+          </button>
+        ) : null}
+      </div>
     </section>
   );
 }

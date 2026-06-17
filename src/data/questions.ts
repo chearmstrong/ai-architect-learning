@@ -848,4 +848,887 @@ export const questions: Question[] = [
       },
     ],
   },
+  {
+    id: "agent-architecture-007",
+    domain: "agent-architecture",
+    difficulty: "foundation",
+    prompt: "When should an architect avoid introducing a multi-agent orchestration?",
+    choices: [
+      { id: "a", text: "When a direct model call or a single tool-using agent reliably meets the requirement." },
+      { id: "b", text: "Whenever a task has any business value." },
+      { id: "c", text: "Only when the application has no user interface." },
+      { id: "d", text: "When the team wants to reduce all testing effort." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Multi-agent systems add coordination overhead, latency, cost, and failure modes. Start with the simplest architecture that meets the requirement reliably.",
+    choiceExplanations: {
+      a: "Correct. Simpler architectures are easier to debug, test, and operate when they are sufficient.",
+      b: "Incorrect. Business value does not automatically require multiple agents.",
+      c: "Incorrect. User interface shape is not the main decision criterion.",
+      d: "Incorrect. Multi-agent orchestration increases the need for testing rather than reducing it.",
+    },
+    sources: [
+      {
+        title: "Microsoft Learn: AI agent orchestration patterns",
+        url: "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns",
+      },
+    ],
+  },
+  {
+    id: "agent-architecture-008",
+    domain: "agent-architecture",
+    difficulty: "applied",
+    prompt:
+      "A workflow needs one model call plus a database lookup and application-owned business logic. Which architecture is the best starting point?",
+    choices: [
+      { id: "a", text: "A single agent or model call with explicit tools and application-controlled orchestration." },
+      { id: "b", text: "A group chat of many agents because every tool call requires debate." },
+      { id: "c", text: "A fully autonomous agent that can create new tools at runtime." },
+      { id: "d", text: "A separate specialist agent for every database column." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "When the app can own the control flow and only needs model reasoning plus tools, a single-agent or Responses-style design is usually enough.",
+    choiceExplanations: {
+      a: "Correct. It keeps orchestration explicit while still giving the model access to needed data.",
+      b: "Incorrect. Agent debate adds overhead without a requirement for collaboration.",
+      c: "Incorrect. Runtime tool creation expands risk and is unnecessary here.",
+      d: "Incorrect. Excessive decomposition makes the system harder to operate.",
+    },
+    sources: [
+      {
+        title: "OpenAI docs: Agents SDK",
+        url: "https://developers.openai.com/api/docs/guides/agents",
+      },
+      {
+        title: "Microsoft Learn: AI agent orchestration patterns",
+        url: "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns",
+      },
+    ],
+  },
+  {
+    id: "agent-architecture-009",
+    domain: "agent-architecture",
+    difficulty: "scenario",
+    prompt:
+      "A contract workflow must select a template, customise clauses, check compliance, and then assess risk in that order. Which orchestration pattern best fits?",
+    choices: [
+      { id: "a", text: "Sequential orchestration, where each stage receives the previous stage's output." },
+      { id: "b", text: "Concurrent orchestration, where all stages edit the contract independently at the same time." },
+      { id: "c", text: "Random handoff, where any agent decides the next step without constraints." },
+      { id: "d", text: "No orchestration, because ordered dependencies cannot be represented in agent systems." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Sequential orchestration fits workflows with clear ordered dependencies. Each stage can build on validated output from the previous stage.",
+    choiceExplanations: {
+      a: "Correct. The task has a predictable pipeline with dependencies between steps.",
+      b: "Incorrect. Parallel edits would create coordination and consistency problems.",
+      c: "Incorrect. Random routing undermines the required order.",
+      d: "Incorrect. Ordered agent workflows are a common orchestration pattern.",
+    },
+    sources: [
+      {
+        title: "Microsoft Learn: AI agent orchestration patterns",
+        url: "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns",
+      },
+    ],
+  },
+  {
+    id: "agent-architecture-010",
+    domain: "agent-architecture",
+    difficulty: "scenario",
+    prompt:
+      "A risk review benefits from independent legal, technical, and operational perspectives. What is the main design requirement for concurrent agents?",
+    choices: [
+      { id: "a", text: "Give each agent a bounded task and define how their results will be aggregated." },
+      { id: "b", text: "Let every agent update the same production record without coordination." },
+      { id: "c", text: "Remove specialist roles so every agent produces the same answer." },
+      { id: "d", text: "Skip aggregation because parallel outputs are automatically consistent." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Concurrent orchestration is useful for independent perspectives, but it needs task boundaries and a conflict or aggregation strategy.",
+    choiceExplanations: {
+      a: "Correct. Parallel work needs scoped inputs and an explicit synthesis step.",
+      b: "Incorrect. Shared-state writes create conflicts and audit risk.",
+      c: "Incorrect. Specialist perspectives are the reason to use this pattern.",
+      d: "Incorrect. Independent outputs can conflict and must be reconciled.",
+    },
+    sources: [
+      {
+        title: "Microsoft Learn: AI agent orchestration patterns",
+        url: "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns",
+      },
+      {
+        title: "OpenAI Codex docs: Subagents",
+        url: "https://developers.openai.com/codex/concepts/subagents",
+      },
+    ],
+  },
+  {
+    id: "agent-architecture-011",
+    domain: "agent-architecture",
+    difficulty: "applied",
+    prompt:
+      "An agent may issue refunds after reviewing support history. Which control should the architect add before the refund tool executes?",
+    choices: [
+      { id: "a", text: "A human approval or confirmation step that shows the proposed action and inputs." },
+      { id: "b", text: "A hidden system instruction telling the model to be careful." },
+      { id: "c", text: "A broader refund tool that accepts any free-form text." },
+      { id: "d", text: "A rule that retries refunds until one succeeds." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "State-changing and sensitive operations should be explicit, reviewable, and interruptible before execution.",
+    choiceExplanations: {
+      a: "Correct. Human approval keeps sensitive tool use visible and controllable.",
+      b: "Incorrect. Hidden caution is weaker than an explicit approval gate.",
+      c: "Incorrect. Broad free-form inputs reduce validation and increase risk.",
+      d: "Incorrect. Blind retries can multiply harmful side effects.",
+    },
+    sources: [
+      {
+        title: "MCP specification: Tools",
+        url: "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      },
+      {
+        title: "OWASP Top 10 for LLMs 2025",
+        url: "https://genai.owasp.org/llm-top-10/",
+      },
+    ],
+  },
+  {
+    id: "agent-architecture-012",
+    domain: "agent-architecture",
+    difficulty: "foundation",
+    prompt: "What is a practical reason to keep agent state and run results observable?",
+    choices: [
+      { id: "a", text: "It supports debugging, evaluation, resumability, and review of multi-step work." },
+      { id: "b", text: "It guarantees that no prompt injection can occur." },
+      { id: "c", text: "It removes the need to design tool schemas." },
+      { id: "d", text: "It lets developers skip user-facing error handling." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Agent workflows are easier to operate when intermediate state, outputs, and decisions can be inspected and evaluated.",
+    choiceExplanations: {
+      a: "Correct. Observability makes complex workflows debuggable and auditable.",
+      b: "Incorrect. Observability helps investigation, but it is not a security guarantee.",
+      c: "Incorrect. Tool schemas are still part of the contract.",
+      d: "Incorrect. Users still need clear failure and recovery paths.",
+    },
+    sources: [
+      {
+        title: "OpenAI docs: Agents SDK",
+        url: "https://developers.openai.com/api/docs/guides/agents",
+      },
+      {
+        title: "LangGraph docs: Overview",
+        url: "https://docs.langchain.com/oss/python/langgraph/overview",
+      },
+    ],
+  },
+  {
+    id: "tool-mcp-007",
+    domain: "tool-mcp",
+    difficulty: "foundation",
+    prompt: "What is the core purpose of function calling in a model application?",
+    choices: [
+      { id: "a", text: "To let the model request external data or actions through defined interfaces." },
+      { id: "b", text: "To give the model unrestricted access to every backend system." },
+      { id: "c", text: "To replace application-side authorization checks." },
+      { id: "d", text: "To force every response to be a user-visible paragraph." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Function calling connects model reasoning to application capabilities through named tools, schemas, and application execution logic.",
+    choiceExplanations: {
+      a: "Correct. Tools bridge natural language intent to external systems and data.",
+      b: "Incorrect. Tool access should be deliberately scoped.",
+      c: "Incorrect. Authorization remains an application responsibility.",
+      d: "Incorrect. Function calling is about tool requests, not prose formatting.",
+    },
+    sources: [
+      {
+        title: "OpenAI docs: Function calling",
+        url: "https://developers.openai.com/api/docs/guides/function-calling",
+      },
+      {
+        title: "Gemini API docs: Function calling",
+        url: "https://ai.google.dev/gemini-api/docs/function-calling",
+      },
+    ],
+  },
+  {
+    id: "tool-mcp-008",
+    domain: "tool-mcp",
+    difficulty: "applied",
+    prompt:
+      "An OpenAI function uses strict mode and has an optional `delivery_date`. How should the schema represent that optional field?",
+    choices: [
+      { id: "a", text: "Include the field in `required` and allow `null` as a valid type." },
+      { id: "b", text: "Omit the field from the schema and ask for it in prose." },
+      { id: "c", text: "Use an untyped string field called `misc` for all optional values." },
+      { id: "d", text: "Mark the whole parameters object as free-form." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Strict schemas require all fields to be listed as required, while optional semantics can be represented by allowing `null`.",
+    choiceExplanations: {
+      a: "Correct. This preserves schema strictness while representing absence explicitly.",
+      b: "Incorrect. Prose-only fields are not reliably validated.",
+      c: "Incorrect. A generic field weakens the tool contract.",
+      d: "Incorrect. Free-form parameters defeat strict schema validation.",
+    },
+    sources: [
+      {
+        title: "OpenAI docs: Function calling",
+        url: "https://developers.openai.com/api/docs/guides/function-calling",
+      },
+    ],
+  },
+  {
+    id: "tool-mcp-009",
+    domain: "tool-mcp",
+    difficulty: "scenario",
+    prompt:
+      "A production assistant has many tools, but one request should only be allowed to search docs and fetch records. What should the application do?",
+    choices: [
+      { id: "a", text: "Restrict the callable tool set for that turn to the allowed tools." },
+      { id: "b", text: "Expose every tool and trust the model to avoid risky ones." },
+      { id: "c", text: "Rename risky tools so the model is less likely to notice them." },
+      { id: "d", text: "Move all tool descriptions into private logs." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Tool availability should reflect the workflow's current permissions and intent. Restricting tools reduces accidental or unauthorized actions.",
+    choiceExplanations: {
+      a: "Correct. The app should make only appropriate capabilities available.",
+      b: "Incorrect. Broad availability increases the blast radius of mistakes.",
+      c: "Incorrect. Obscurity is not a reliable control.",
+      d: "Incorrect. The model and users need clear tool descriptions.",
+    },
+    sources: [
+      {
+        title: "OpenAI docs: Function calling",
+        url: "https://developers.openai.com/api/docs/guides/function-calling",
+      },
+      {
+        title: "OWASP Top 10 for LLMs 2025",
+        url: "https://genai.owasp.org/llm-top-10/",
+      },
+    ],
+  },
+  {
+    id: "tool-mcp-010",
+    domain: "tool-mcp",
+    difficulty: "foundation",
+    prompt: "In MCP, what information should a tool definition include so a model can use it correctly?",
+    choices: [
+      { id: "a", text: "A unique name, description, and input schema for expected parameters." },
+      { id: "b", text: "Only a hidden implementation file path." },
+      { id: "c", text: "Only an example output with no input contract." },
+      { id: "d", text: "A natural-language promise that validation happens somewhere else." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "MCP tools are discoverable capabilities. Names, descriptions, and schemas help clients and models choose and call them correctly.",
+    choiceExplanations: {
+      a: "Correct. These fields form the model-facing tool contract.",
+      b: "Incorrect. Implementation paths are not enough for safe tool use.",
+      c: "Incorrect. Inputs need an explicit schema.",
+      d: "Incorrect. Validation should be reflected in the contract and enforced by the server.",
+    },
+    sources: [
+      {
+        title: "MCP specification: Tools",
+        url: "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      },
+    ],
+  },
+  {
+    id: "tool-mcp-011",
+    domain: "tool-mcp",
+    difficulty: "applied",
+    prompt:
+      "A tool returns structured order data that downstream code will consume. Which server behaviour is most reliable?",
+    choices: [
+      { id: "a", text: "Return structured content that conforms to an output schema and validate it before use." },
+      { id: "b", text: "Return a friendly paragraph and let clients scrape values with regular expressions." },
+      { id: "c", text: "Return whatever the upstream API sent without sanitising it." },
+      { id: "d", text: "Hide tool errors by returning empty successful results." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Structured tool output with schema validation gives clients a safer contract than scraping prose or passing raw upstream responses through unchecked.",
+    choiceExplanations: {
+      a: "Correct. It makes the output machine-readable and enforceable.",
+      b: "Incorrect. Scraping prose is brittle.",
+      c: "Incorrect. Raw outputs can contain unsafe or irrelevant data.",
+      d: "Incorrect. Hidden failures make recovery and debugging harder.",
+    },
+    sources: [
+      {
+        title: "MCP specification: Tools",
+        url: "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      },
+      {
+        title: "OWASP Top 10 for LLMs 2025",
+        url: "https://genai.owasp.org/llm-top-10/",
+      },
+    ],
+  },
+  {
+    id: "tool-mcp-012",
+    domain: "tool-mcp",
+    difficulty: "scenario",
+    prompt:
+      "A product assistant needs to fetch live inventory before answering, then return a typed final summary to the UI. Which design separates responsibilities best?",
+    choices: [
+      { id: "a", text: "Use function calling for the inventory lookup and structured output for the final UI response." },
+      { id: "b", text: "Use structured output to secretly execute the inventory lookup." },
+      { id: "c", text: "Use a tool call for the final display format and no schema for the lookup." },
+      { id: "d", text: "Avoid schemas because both steps are related to products." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Function calling is for requesting external actions or data. Structured output is best for constraining the model's final response shape.",
+    choiceExplanations: {
+      a: "Correct. Each mechanism is used for the part it controls best.",
+      b: "Incorrect. Structured output formats responses; it does not execute tools.",
+      c: "Incorrect. The external lookup needs a tool contract.",
+      d: "Incorrect. Related domain concepts still need separate contracts.",
+    },
+    sources: [
+      {
+        title: "OpenAI docs: Structured outputs",
+        url: "https://developers.openai.com/api/docs/guides/structured-outputs",
+      },
+      {
+        title: "Gemini API docs: Structured outputs",
+        url: "https://ai.google.dev/gemini-api/docs/structured-output",
+      },
+    ],
+  },
+  {
+    id: "claude-code-007",
+    domain: "claude-code",
+    difficulty: "foundation",
+    prompt:
+      "For a coding-agent task, which prompt structure gives the agent the clearest starting point?",
+    choices: [
+      { id: "a", text: "Goal, relevant context, constraints, and what should be true when the task is done." },
+      { id: "b", text: "A vague instruction to improve the repository however it wants." },
+      { id: "c", text: "Only the desired branch name." },
+      { id: "d", text: "Only a screenshot with no explanation of expected behaviour." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Coding agents work more reliably when task prompts define the goal, context, constraints, and completion criteria.",
+    choiceExplanations: {
+      a: "Correct. These elements scope the work and make verification concrete.",
+      b: "Incorrect. Vague goals invite unrelated or risky changes.",
+      c: "Incorrect. A branch name does not describe the work.",
+      d: "Incorrect. Screenshots can help, but they are not a complete task contract.",
+    },
+    sources: [
+      {
+        title: "OpenAI Codex docs: Best practices",
+        url: "https://developers.openai.com/codex/learn/best-practices",
+      },
+    ],
+  },
+  {
+    id: "claude-code-008",
+    domain: "claude-code",
+    difficulty: "applied",
+    prompt:
+      "A coding agent repeatedly needs the same repository test command, lint command, and review expectations. Where should a Codex team put this durable guidance?",
+    choices: [
+      { id: "a", text: "In a repository-level `AGENTS.md` or equivalent project instruction file." },
+      { id: "b", text: "Only in one user's terminal history." },
+      { id: "c", text: "Only in generated test output." },
+      { id: "d", text: "In a dependency lockfile comment." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Durable repository guidance belongs in a shared instruction file so future agent sessions load the same expectations.",
+    choiceExplanations: {
+      a: "Correct. Shared instructions make conventions visible and repeatable.",
+      b: "Incorrect. Terminal history is local, unstable, and invisible to other sessions.",
+      c: "Incorrect. Test output is not a source of project guidance.",
+      d: "Incorrect. Lockfiles should not carry workflow instructions.",
+    },
+    sources: [
+      {
+        title: "OpenAI Codex docs: AGENTS.md",
+        url: "https://developers.openai.com/codex/guides/agents-md",
+      },
+    ],
+  },
+  {
+    id: "claude-code-009",
+    domain: "claude-code",
+    difficulty: "scenario",
+    prompt:
+      "A coding agent is about to start an ambiguous, multi-file refactor. What should the user ask for before implementation?",
+    choices: [
+      { id: "a", text: "A short plan that identifies affected areas, assumptions, and verification steps." },
+      { id: "b", text: "Immediate edits across the whole repository with no context gathering." },
+      { id: "c", text: "A promise that no tests will be needed." },
+      { id: "d", text: "A list of unrelated packages to upgrade first." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Planning first is useful for complex or ambiguous coding-agent tasks because it surfaces scope, assumptions, and checks before edits begin.",
+    choiceExplanations: {
+      a: "Correct. A plan makes the work reviewable before changes are made.",
+      b: "Incorrect. Immediate broad edits increase the chance of drift.",
+      c: "Incorrect. Multi-file refactors need verification.",
+      d: "Incorrect. Unrelated upgrades add risk and noise.",
+    },
+    sources: [
+      {
+        title: "OpenAI Codex docs: Best practices",
+        url: "https://developers.openai.com/codex/learn/best-practices",
+      },
+    ],
+  },
+  {
+    id: "claude-code-010",
+    domain: "claude-code",
+    difficulty: "scenario",
+    prompt:
+      "A coding agent can split work across subagents. Which task is the best first candidate for parallel subagents?",
+    choices: [
+      { id: "a", text: "Read-heavy exploration of independent areas, with each subagent returning a concise summary." },
+      { id: "b", text: "Several agents editing the same file at the same time." },
+      { id: "c", text: "A production deployment requiring one accountable operator." },
+      { id: "d", text: "A tiny typo fix in one obvious line." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Parallel subagents are strongest for independent read-heavy exploration, triage, testing, or summarisation. Write-heavy overlap creates coordination overhead.",
+    choiceExplanations: {
+      a: "Correct. It uses parallelism without causing edit conflicts.",
+      b: "Incorrect. Concurrent edits to the same file are conflict-prone.",
+      c: "Incorrect. Sensitive deployments should have clear control and approval.",
+      d: "Incorrect. A trivial edit does not justify subagent overhead.",
+    },
+    sources: [
+      {
+        title: "OpenAI Codex docs: Subagents",
+        url: "https://developers.openai.com/codex/concepts/subagents",
+      },
+    ],
+  },
+  {
+    id: "claude-code-011",
+    domain: "claude-code",
+    difficulty: "applied",
+    prompt:
+      "Why should subagents return distilled findings instead of dumping every command log into the main coding-agent thread?",
+    choices: [
+      { id: "a", text: "It keeps the main thread focused on requirements, decisions, and final synthesis." },
+      { id: "b", text: "It prevents subagents from using any tools." },
+      { id: "c", text: "It makes verification unnecessary." },
+      { id: "d", text: "It hides evidence from the coordinator." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Subagent summaries reduce context pollution while still preserving the findings the coordinator needs to decide and act.",
+    choiceExplanations: {
+      a: "Correct. The coordinator needs signal, not every intermediate detail.",
+      b: "Incorrect. Subagents can still use tools for their scoped work.",
+      c: "Incorrect. Summaries do not replace verification.",
+      d: "Incorrect. Good summaries include enough evidence to be useful.",
+    },
+    sources: [
+      {
+        title: "OpenAI Codex docs: Subagents",
+        url: "https://developers.openai.com/codex/concepts/subagents",
+      },
+    ],
+  },
+  {
+    id: "claude-code-012",
+    domain: "claude-code",
+    difficulty: "foundation",
+    prompt: "What is the role of MCP in a coding-agent environment such as Codex?",
+    choices: [
+      { id: "a", text: "It connects the agent to external tools and context such as documentation, browsers, or design files." },
+      { id: "b", text: "It replaces the repository's build system." },
+      { id: "c", text: "It guarantees generated code is correct without tests." },
+      { id: "d", text: "It stores all project source code inside the model weights." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "MCP is an integration protocol for connecting agents to tools and context. It extends what the agent can inspect or invoke, but it does not replace project verification.",
+    choiceExplanations: {
+      a: "Correct. MCP provides a standard integration path for external capabilities.",
+      b: "Incorrect. Build systems still run outside the protocol.",
+      c: "Incorrect. Tool access does not prove code correctness.",
+      d: "Incorrect. MCP provides runtime access, not model training.",
+    },
+    sources: [
+      {
+        title: "OpenAI Codex docs: Model Context Protocol",
+        url: "https://developers.openai.com/codex/mcp",
+      },
+      {
+        title: "MCP docs: What is MCP?",
+        url: "https://modelcontextprotocol.io/docs/getting-started/intro",
+      },
+    ],
+  },
+  {
+    id: "prompt-structured-output-007",
+    domain: "prompt-structured-output",
+    difficulty: "foundation",
+    prompt: "What is the main advantage of schema-based structured outputs over basic JSON mode?",
+    choices: [
+      { id: "a", text: "The output is constrained to match a declared schema, not merely valid JSON syntax." },
+      { id: "b", text: "The model no longer needs any task instructions." },
+      { id: "c", text: "The application can skip semantic validation of values." },
+      { id: "d", text: "The model can call external APIs without tools." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Structured outputs provide a stronger contract than valid JSON alone by constraining fields, types, and allowed values.",
+    choiceExplanations: {
+      a: "Correct. Schema adherence is the key reliability improvement.",
+      b: "Incorrect. The task still needs clear instructions.",
+      c: "Incorrect. Schema-valid values can still be semantically wrong.",
+      d: "Incorrect. External actions require tool or application logic.",
+    },
+    sources: [
+      {
+        title: "OpenAI docs: Structured outputs",
+        url: "https://developers.openai.com/api/docs/guides/structured-outputs",
+      },
+    ],
+  },
+  {
+    id: "prompt-structured-output-008",
+    domain: "prompt-structured-output",
+    difficulty: "applied",
+    prompt:
+      "A sentiment classifier should return only `positive`, `neutral`, or `negative`. Which schema choice best supports that requirement?",
+    choices: [
+      { id: "a", text: "Use a string field with an enum of the three allowed labels." },
+      { id: "b", text: "Use an unrestricted paragraph field and parse whichever label appears first." },
+      { id: "c", text: "Use a number field because numbers are easier to validate." },
+      { id: "d", text: "Leave the label out of the schema and ask for it in Markdown." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "An enum captures the allowed label set directly and makes invalid labels easier to reject.",
+    choiceExplanations: {
+      a: "Correct. Strong typing and enums reduce routing ambiguity.",
+      b: "Incorrect. Parsing prose is brittle and can produce invalid labels.",
+      c: "Incorrect. A number does not express the domain labels clearly.",
+      d: "Incorrect. Markdown is presentation, not a strict classification contract.",
+    },
+    sources: [
+      {
+        title: "Gemini API docs: Structured outputs",
+        url: "https://ai.google.dev/gemini-api/docs/structured-output",
+      },
+    ],
+  },
+  {
+    id: "prompt-structured-output-009",
+    domain: "prompt-structured-output",
+    difficulty: "scenario",
+    prompt:
+      "A schema-compliant extraction returns a valid date field, but the date is not present in the source document. What should the application do?",
+    choices: [
+      { id: "a", text: "Treat this as a semantic validation failure and handle it in application logic or evaluation." },
+      { id: "b", text: "Accept it because valid JSON means the value is true." },
+      { id: "c", text: "Remove the source document from future prompts." },
+      { id: "d", text: "Switch to prose output so incorrect facts are harder to detect." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Structured outputs can enforce format, but the application still needs to validate whether values are supported by source evidence and business rules.",
+    choiceExplanations: {
+      a: "Correct. Format validation and factual validation are different checks.",
+      b: "Incorrect. Schema validity does not prove source support.",
+      c: "Incorrect. Removing evidence worsens grounding.",
+      d: "Incorrect. Prose makes validation less reliable.",
+    },
+    sources: [
+      {
+        title: "Gemini API docs: Structured outputs",
+        url: "https://ai.google.dev/gemini-api/docs/structured-output",
+      },
+      {
+        title: "OpenAI docs: Structured outputs",
+        url: "https://developers.openai.com/api/docs/guides/structured-outputs",
+      },
+    ],
+  },
+  {
+    id: "prompt-structured-output-010",
+    domain: "prompt-structured-output",
+    difficulty: "foundation",
+    prompt: "What should a prompt evaluation define before comparing prompt variants?",
+    choices: [
+      { id: "a", text: "The task, test inputs, and criteria that make an output acceptable." },
+      { id: "b", text: "Only the model name and the longest prompt." },
+      { id: "c", text: "A single favourite output that should be copied exactly for all inputs." },
+      { id: "d", text: "A rule that every prompt change is automatically better." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Prompt changes should be judged against explicit examples and acceptance criteria, especially when changing models or instructions.",
+    choiceExplanations: {
+      a: "Correct. Evals make prompt quality observable rather than anecdotal.",
+      b: "Incorrect. Model and prompt length do not define success.",
+      c: "Incorrect. Varied inputs need criteria, not one fixed answer.",
+      d: "Incorrect. Prompt changes can regress behaviour.",
+    },
+    sources: [
+      {
+        title: "OpenAI docs: Working with evals",
+        url: "https://developers.openai.com/api/docs/guides/evals",
+      },
+    ],
+  },
+  {
+    id: "prompt-structured-output-011",
+    domain: "prompt-structured-output",
+    difficulty: "applied",
+    prompt:
+      "A reasoning model receives a highly detailed prompt that specifies every micro-step. It performs worse on varied tasks. What adjustment is most appropriate?",
+    choices: [
+      { id: "a", text: "State the goal, constraints, and output expectations more clearly, while avoiding unnecessary step-by-step overconstraint." },
+      { id: "b", text: "Remove the goal and provide only examples." },
+      { id: "c", text: "Add contradictory instructions so the model has more options." },
+      { id: "d", text: "Tell the model that any answer is acceptable." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Prompting should give enough direction for the task without overfitting the model to brittle procedural instructions.",
+    choiceExplanations: {
+      a: "Correct. Clear goals and constraints preserve flexibility where the model should reason.",
+      b: "Incorrect. Examples alone may not define the task or constraints.",
+      c: "Incorrect. Contradictions reduce reliability.",
+      d: "Incorrect. Acceptance criteria are necessary for useful output.",
+    },
+    sources: [
+      {
+        title: "OpenAI docs: Prompt engineering",
+        url: "https://developers.openai.com/api/docs/guides/prompt-engineering",
+      },
+    ],
+  },
+  {
+    id: "prompt-structured-output-012",
+    domain: "prompt-structured-output",
+    difficulty: "scenario",
+    prompt:
+      "A UI needs a model response with separate fields for `summary`, `risk_level`, and `next_action`. The model does not need to call any external system. Which mechanism fits best?",
+    choices: [
+      { id: "a", text: "Structured output for the final response shape." },
+      { id: "b", text: "Function calling, even though no external action is needed." },
+      { id: "c", text: "A hidden database write tool." },
+      { id: "d", text: "Plain text with headings parsed by CSS." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "When the goal is to shape the model's final answer for application consumption, structured output is the natural fit.",
+    choiceExplanations: {
+      a: "Correct. The response needs a typed final format, not a tool call.",
+      b: "Incorrect. Function calling is for requesting external data or actions.",
+      c: "Incorrect. A hidden side-effecting tool is unnecessary and risky.",
+      d: "Incorrect. CSS cannot provide a reliable data contract.",
+    },
+    sources: [
+      {
+        title: "OpenAI docs: Structured outputs",
+        url: "https://developers.openai.com/api/docs/guides/structured-outputs",
+      },
+      {
+        title: "Gemini API docs: Structured outputs",
+        url: "https://ai.google.dev/gemini-api/docs/structured-output",
+      },
+    ],
+  },
+  {
+    id: "context-reliability-007",
+    domain: "context-reliability",
+    difficulty: "foundation",
+    prompt: "Why should teams run evaluations before upgrading the model used by an LLM application?",
+    choices: [
+      { id: "a", text: "To detect behavioural regressions against representative tasks and acceptance criteria." },
+      { id: "b", text: "To prove the new model will never make mistakes." },
+      { id: "c", text: "To avoid writing any application tests." },
+      { id: "d", text: "To make prompts longer before every release." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Model changes can improve some behaviours while regressing others. Evaluations give teams evidence before rollout.",
+    choiceExplanations: {
+      a: "Correct. Representative evals catch regressions and guide iteration.",
+      b: "Incorrect. Evals reduce risk but cannot prove perfection.",
+      c: "Incorrect. Application tests and model evaluations complement each other.",
+      d: "Incorrect. Prompt length is not the goal.",
+    },
+    sources: [
+      {
+        title: "OpenAI docs: Working with evals",
+        url: "https://developers.openai.com/api/docs/guides/evals",
+      },
+    ],
+  },
+  {
+    id: "context-reliability-008",
+    domain: "context-reliability",
+    difficulty: "applied",
+    prompt:
+      "A user asks for current regulatory information that may have changed recently. Which architecture best improves answer reliability?",
+    choices: [
+      { id: "a", text: "Ground the response in a current search or trusted retrieval source and expose supporting evidence." },
+      { id: "b", text: "Force the model to answer only from its training data." },
+      { id: "c", text: "Ask the model to sound confident and omit uncertainty." },
+      { id: "d", text: "Disable citations because they make answers longer." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Fresh or changing topics need runtime grounding in current sources. Evidence also lets users and evaluators inspect support for claims.",
+    choiceExplanations: {
+      a: "Correct. Retrieval or search grounds the answer in current evidence.",
+      b: "Incorrect. Training data may be stale.",
+      c: "Incorrect. Confidence is not a substitute for current evidence.",
+      d: "Incorrect. Citations are useful for verification.",
+    },
+    sources: [
+      {
+        title: "Gemini API docs: Google Search grounding",
+        url: "https://ai.google.dev/gemini-api/docs/google-search",
+      },
+    ],
+  },
+  {
+    id: "context-reliability-009",
+    domain: "context-reliability",
+    difficulty: "scenario",
+    prompt:
+      "A banking assistant must avoid illegal investment advice and redact personally identifiable information. What should the architecture include?",
+    choices: [
+      { id: "a", text: "Configurable guardrails or policy checks around both user input and model responses." },
+      { id: "b", text: "Only a friendly system prompt asking the model to be safe." },
+      { id: "c", text: "A tool that publishes every conversation transcript for audit." },
+      { id: "d", text: "No filtering so the model has maximum context." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "High-risk applications need explicit safeguards for harmful content, denied topics, sensitive information, and response handling.",
+    choiceExplanations: {
+      a: "Correct. Guardrails make safety policy enforceable and testable.",
+      b: "Incorrect. A prompt alone is a weak control for regulated workflows.",
+      c: "Incorrect. Publishing transcripts can create privacy violations.",
+      d: "Incorrect. Unfiltered context can expose users and the organisation to risk.",
+    },
+    sources: [
+      {
+        title: "AWS docs: Amazon Bedrock Guardrails",
+        url: "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+      },
+      {
+        title: "NIST AI Risk Management Framework",
+        url: "https://www.nist.gov/itl/ai-risk-management-framework",
+      },
+    ],
+  },
+  {
+    id: "context-reliability-010",
+    domain: "context-reliability",
+    difficulty: "applied",
+    prompt:
+      "A support agent reads customer-provided webpages before deciding whether to call internal tools. What is the main security concern?",
+    choices: [
+      { id: "a", text: "Untrusted content may contain prompt injection instructions that try to change the agent's behaviour." },
+      { id: "b", text: "Webpages are always more reliable than system instructions." },
+      { id: "c", text: "Prompt injection only matters for image generation." },
+      { id: "d", text: "Internal tools become safe automatically if the user is polite." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Retrieved or user-controlled content should be treated as untrusted data, especially before tool use or sensitive decisions.",
+    choiceExplanations: {
+      a: "Correct. Prompt injection can target the model's instructions and tool choices.",
+      b: "Incorrect. Untrusted content must not override trusted instructions.",
+      c: "Incorrect. Prompt injection affects text and agentic workflows too.",
+      d: "Incorrect. User tone is not an access-control mechanism.",
+    },
+    sources: [
+      {
+        title: "OWASP Top 10 for LLMs 2025",
+        url: "https://genai.owasp.org/llm-top-10/",
+      },
+    ],
+  },
+  {
+    id: "context-reliability-011",
+    domain: "context-reliability",
+    difficulty: "scenario",
+    prompt:
+      "An agent can read private documents, send emails, and delete records. Which risk does this most directly create if permissions are too broad?",
+    choices: [
+      { id: "a", text: "Excessive agency, where the agent can take actions beyond the user's intent or safe scope." },
+      { id: "b", text: "A harmless increase in model creativity." },
+      { id: "c", text: "A guarantee that all tasks complete faster." },
+      { id: "d", text: "A reduction in the need for audit logs." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Agents should receive the least privilege needed for the task. Broad read and write powers increase the blast radius of mistakes or attacks.",
+    choiceExplanations: {
+      a: "Correct. Excessive permissions are a core agentic application risk.",
+      b: "Incorrect. This is an authorization and safety issue, not creativity.",
+      c: "Incorrect. More authority can increase risk and operational complexity.",
+      d: "Incorrect. Powerful agents need stronger auditability.",
+    },
+    sources: [
+      {
+        title: "OWASP Top 10 for LLMs 2025",
+        url: "https://genai.owasp.org/llm-top-10/",
+      },
+      {
+        title: "MCP specification: Tools",
+        url: "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      },
+    ],
+  },
+  {
+    id: "context-reliability-012",
+    domain: "context-reliability",
+    difficulty: "foundation",
+    prompt: "What is the role of an AI risk management framework in an LLM application programme?",
+    choices: [
+      { id: "a", text: "To guide how teams identify, measure, manage, and monitor trustworthy AI risks." },
+      { id: "b", text: "To replace all product-specific testing." },
+      { id: "c", text: "To guarantee that any chosen model is unbiased." },
+      { id: "d", text: "To remove the need for human accountability." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Risk management frameworks provide a governance structure for trustworthy AI work, but they do not replace implementation-specific tests or accountability.",
+    choiceExplanations: {
+      a: "Correct. Frameworks help teams reason systematically about risk across the lifecycle.",
+      b: "Incorrect. Product-specific verification is still required.",
+      c: "Incorrect. Frameworks guide risk work; they do not guarantee model properties.",
+      d: "Incorrect. Human accountability remains central to responsible AI systems.",
+    },
+    sources: [
+      {
+        title: "NIST AI Risk Management Framework",
+        url: "https://www.nist.gov/itl/ai-risk-management-framework",
+      },
+    ],
+  },
 ];

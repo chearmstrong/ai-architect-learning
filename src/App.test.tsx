@@ -15,6 +15,7 @@ describe("App", () => {
 
   it("shows practice feedback immediately and persists the completed session", async () => {
     localStorage.clear();
+    const random = vi.spyOn(Math, "random").mockReturnValue(0.999);
     render(<App />);
 
     await userEvent.click(screen.getByRole("button", { name: "Start quiz" }));
@@ -38,10 +39,13 @@ describe("App", () => {
     await userEvent.click(screen.getByRole("button", { name: "Back to dashboard" }));
     expect(screen.getByRole("heading", { name: "Recent sessions" })).toBeInTheDocument();
     expect(screen.getByText("1/1 correct")).toBeInTheDocument();
+
+    random.mockRestore();
   });
 
   it("delays exam feedback until review", async () => {
     localStorage.clear();
+    const random = vi.spyOn(Math, "random").mockReturnValue(0.999);
     render(<App />);
 
     await userEvent.click(screen.getByRole("button", { name: "Start quiz" }));
@@ -56,6 +60,31 @@ describe("App", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "Review session" }));
     expect(screen.getByText(/Subagents should receive the context/)).toBeInTheDocument();
+
+    random.mockRestore();
+  });
+
+  it("lets a quiz end early and saves answered progress", async () => {
+    localStorage.clear();
+    const random = vi.spyOn(Math, "random").mockReturnValue(0.999);
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Start quiz" }));
+    await userEvent.selectOptions(screen.getByLabelText("Domain"), "agent-architecture");
+    await userEvent.clear(screen.getByLabelText("Question count"));
+    await userEvent.type(screen.getByLabelText("Question count"), "5");
+    await userEvent.click(screen.getByRole("button", { name: "Start" }));
+    await userEvent.click(screen.getByRole("button", { name: /Pass the relevant document text/ }));
+    await userEvent.click(screen.getByRole("button", { name: "End quiz" }));
+
+    expect(screen.getByRole("heading", { name: "1 / 1 correct" })).toBeInTheDocument();
+
+    const saved = JSON.parse(localStorage.getItem("ai-architect-learning:progress:v1") ?? "{}");
+    expect(saved.attempts).toHaveLength(1);
+    expect(saved.sessions).toHaveLength(1);
+    expect(saved.sessions[0].questionIds).toEqual(["agent-architecture-001"]);
+
+    random.mockRestore();
   });
 
   it("clears local progress after reset confirmation", async () => {
@@ -98,6 +127,7 @@ describe("App", () => {
 
   it("keeps in-memory progress and shows a warning when local save fails", async () => {
     localStorage.clear();
+    const random = vi.spyOn(Math, "random").mockReturnValue(0.999);
     const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
       throw new Error("storage unavailable");
     });
@@ -119,5 +149,6 @@ describe("App", () => {
     expect(screen.getByText("1/1 correct")).toBeInTheDocument();
 
     setItem.mockRestore();
+    random.mockRestore();
   });
 });
