@@ -7,6 +7,10 @@ describe("App", () => {
   it("renders the scaffold heading", () => {
     render(<App />);
     expect(screen.getByRole("heading", { name: "AI Architect Learning" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "View source on GitHub" })).toHaveAttribute(
+      "href",
+      "https://github.com/chearmstrong/ai-architect-learning",
+    );
   });
 
   it("shows practice feedback immediately and persists the completed session", async () => {

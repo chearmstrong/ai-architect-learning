@@ -1,4 +1,4 @@
-import { BarChart3, Flame, Target, Trophy } from "lucide-react";
+import { BarChart3, Flame, Github, Target, Trophy } from "lucide-react";
 import { domainLabels } from "../data/domains";
 import type { DashboardStats } from "../stats/stats";
 import { SettingsPanel } from "./SettingsPanel";
@@ -19,10 +19,22 @@ export function Dashboard({ stats, onStartQuiz, onResetProgress }: DashboardProp
           <p className="eyebrow">Unofficial practice</p>
           <h1 id="dashboard-title">AI Architect Learning</h1>
         </div>
-        <button className="primary-button" onClick={onStartQuiz}>
-          <Target size={18} aria-hidden="true" />
-          Start quiz
-        </button>
+        <div className="dashboard-actions">
+          <a
+            className="icon-link"
+            href="https://github.com/chearmstrong/ai-architect-learning"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="View source on GitHub"
+            title="View source on GitHub"
+          >
+            <Github size={20} aria-hidden="true" />
+          </a>
+          <button className="primary-button" onClick={onStartQuiz}>
+            <Target size={18} aria-hidden="true" />
+            Start quiz
+          </button>
+        </div>
       </div>
 
       <div className="metric-grid">
