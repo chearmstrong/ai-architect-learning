@@ -55,11 +55,55 @@ describe("App", () => {
     await userEvent.type(screen.getByLabelText("Question count"), "1");
     await userEvent.click(screen.getByRole("button", { name: "Start" }));
     await userEvent.click(screen.getByRole("button", { name: /Pass the relevant document text/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Submit answer" }));
 
     expect(screen.queryByRole("heading", { name: "Correct" })).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Review session" }));
     expect(screen.getByText(/Subagents should receive the context/)).toBeInTheDocument();
+
+    random.mockRestore();
+  });
+
+  it("requires exam answers to be submitted after selection", async () => {
+    localStorage.clear();
+    const random = vi.spyOn(Math, "random").mockReturnValue(0.999);
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Start quiz" }));
+    await userEvent.selectOptions(screen.getByLabelText("Mode"), "exam");
+    await userEvent.selectOptions(screen.getByLabelText("Domain"), "agent-architecture");
+    await userEvent.clear(screen.getByLabelText("Question count"));
+    await userEvent.type(screen.getByLabelText("Question count"), "2");
+    await userEvent.click(screen.getByRole("button", { name: "Start" }));
+    await userEvent.click(screen.getByRole("button", { name: /Pass the relevant document text/ }));
+
+    expect(screen.getByText("Question 1 of 2")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Submit answer" })).toBeEnabled();
+
+    await userEvent.click(screen.getByRole("button", { name: "Submit answer" }));
+
+    expect(screen.getByText("Question 2 of 2")).toBeInTheDocument();
+
+    random.mockRestore();
+  });
+
+  it("does not keep an answer choice focused after advancing to the next exam question", async () => {
+    localStorage.clear();
+    const random = vi.spyOn(Math, "random").mockReturnValue(0.999);
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Start quiz" }));
+    await userEvent.selectOptions(screen.getByLabelText("Mode"), "exam");
+    await userEvent.selectOptions(screen.getByLabelText("Domain"), "agent-architecture");
+    await userEvent.clear(screen.getByLabelText("Question count"));
+    await userEvent.type(screen.getByLabelText("Question count"), "2");
+    await userEvent.click(screen.getByRole("button", { name: "Start" }));
+    await userEvent.click(screen.getByRole("button", { name: /Pass the relevant document text/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Submit answer" }));
+
+    const choiceButtons = screen.getAllByRole("button").filter((button) => button.className === "choice-button");
+    expect(choiceButtons).not.toContain(document.activeElement);
 
     random.mockRestore();
   });

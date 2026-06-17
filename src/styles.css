@@ -139,7 +139,7 @@ a {
   color: #17110a;
 }
 
-.primary-button:hover {
+.primary-button:hover:not(:disabled) {
   background: #e3a143;
   transform: translateY(-1px);
 }
@@ -174,9 +174,18 @@ a {
   color: #172033;
 }
 
-.secondary-button:hover {
+.secondary-button:hover:not(:disabled) {
   background: #fff1dc;
   border-color: #c7a97f;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled,
+.danger-button:disabled {
+  box-shadow: none;
+  cursor: default;
+  opacity: 0.58;
+  transform: none;
 }
 
 .metric-grid {
@@ -354,6 +363,12 @@ input:hover {
   transform: translateY(-1px);
 }
 
+.choice-button.selected {
+  background: #eef7f5;
+  border-color: #0e6f68;
+  box-shadow: 0 0 0 3px rgba(14, 111, 104, 0.16);
+}
+
 .choice-button span {
   align-items: center;
   background: #172033;
@@ -369,6 +384,12 @@ input:hover {
 .choice-button:disabled {
   cursor: default;
   opacity: 0.76;
+}
+
+.selection-hint {
+  color: #0f5f59;
+  font-weight: 800;
+  margin: -8px 0 18px;
 }
 
 .feedback {

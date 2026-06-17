@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Question } from "../domain/types";
 import type { QuizAnswer, QuizSession } from "../quiz/quizEngine";
 
@@ -32,6 +32,7 @@ function Explanation({ question, answer }: { question: Question; answer: QuizAns
 
 export function QuizView({ session, onAnswer, onEmptyBack, onFinish }: QuizViewProps) {
   const [dismissedAnswerIds, setDismissedAnswerIds] = useState<Set<string>>(() => new Set());
+  const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
   const previousQuestion = session.questions[session.currentIndex - 1];
   const previousAnswer = previousQuestion ? session.answers[previousQuestion.id] : undefined;
   const shouldShowPreviousAnswer = Boolean(
@@ -41,6 +42,11 @@ export function QuizView({ session, onAnswer, onEmptyBack, onFinish }: QuizViewP
   const question = shouldShowPreviousAnswer ? previousQuestion : session.questions[session.currentIndex];
   const answer = question ? session.answers[question.id] : undefined;
   const canEndEarly = !session.isComplete && session.questions.length > 0;
+  const currentQuestionId = question?.id ?? null;
+
+  useEffect(() => {
+    setSelectedChoiceId(null);
+  }, [currentQuestionId]);
 
   if (!question) {
     if (session.isComplete && session.questions.length > 0) {
@@ -65,6 +71,22 @@ export function QuizView({ session, onAnswer, onEmptyBack, onFinish }: QuizViewP
   }
 
   const isAnswered = Boolean(answer);
+  const requiresSubmit = session.mode === "exam" && !isAnswered;
+
+  function handleChoice(choiceId: string) {
+    if (requiresSubmit) {
+      setSelectedChoiceId(choiceId);
+      return;
+    }
+
+    onAnswer(choiceId);
+  }
+
+  function handleSubmitAnswer() {
+    if (selectedChoiceId) {
+      onAnswer(selectedChoiceId);
+    }
+  }
 
   return (
     <section className="quiz-card">
@@ -73,13 +95,15 @@ export function QuizView({ session, onAnswer, onEmptyBack, onFinish }: QuizViewP
       </p>
       <h1>{question.prompt}</h1>
 
-      <div className="choice-grid">
+      <div className="choice-grid" key={question.id}>
         {question.choices.map((choice) => (
           <button
-            key={choice.id}
-            className="choice-button"
+            key={`${question.id}-${choice.id}`}
+            className={choice.id === selectedChoiceId ? "choice-button selected" : "choice-button"}
             disabled={isAnswered}
-            onClick={() => onAnswer(choice.id)}
+            type="button"
+            aria-pressed={requiresSubmit ? choice.id === selectedChoiceId : undefined}
+            onClick={() => handleChoice(choice.id)}
           >
             <span>{choice.id.toUpperCase()}</span>
             {choice.text}
@@ -87,10 +111,22 @@ export function QuizView({ session, onAnswer, onEmptyBack, onFinish }: QuizViewP
         ))}
       </div>
 
+      {requiresSubmit ? (
+        <p className="selection-hint" aria-live="polite">
+          {selectedChoiceId
+            ? `Selected ${selectedChoiceId.toUpperCase()}. Submit when ready.`
+            : "Select an answer, then submit it when ready."}
+        </p>
+      ) : null}
+
       {answer ? <Explanation question={question} answer={answer} /> : null}
 
       <div className="quiz-actions">
-        {session.isComplete && shouldShowPreviousAnswer ? (
+        {requiresSubmit ? (
+          <button className="primary-button" type="button" disabled={!selectedChoiceId} onClick={handleSubmitAnswer}>
+            Submit answer
+          </button>
+        ) : session.isComplete && shouldShowPreviousAnswer ? (
           <button className="primary-button" onClick={onFinish}>
             Review session
           </button>
