@@ -1384,6 +1384,170 @@ export const questions: Question[] = [
     ],
   },
   {
+    id: "claude-code-013",
+    domain: "claude-code",
+    difficulty: "foundation",
+    prompt: "What is the minimum required structure for an Agent Skill?",
+    choices: [
+      { id: "a", text: "A directory containing a `SKILL.md` file with required frontmatter and instructions." },
+      { id: "b", text: "A running MCP server plus a production database." },
+      { id: "c", text: "A browser extension installed separately for every repository." },
+      { id: "d", text: "A hidden prompt stored only in one user's chat history." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Agent Skills are portable folders. The required core is a `SKILL.md` file with metadata such as `name` and `description`, plus the instructions the agent should follow.",
+    choiceExplanations: {
+      a: "Correct. The skill directory and `SKILL.md` are the required portable unit.",
+      b: "Incorrect. Skills may call tools or scripts, but they do not require an MCP server or database.",
+      c: "Incorrect. Client support varies, but the skill format itself is file-based.",
+      d: "Incorrect. Chat history is not a portable, version-controlled skill.",
+    },
+    sources: [
+      {
+        title: "Agent Skills: Specification",
+        url: "https://agentskills.io/specification",
+      },
+    ],
+  },
+  {
+    id: "claude-code-014",
+    domain: "claude-code",
+    difficulty: "applied",
+    prompt:
+      "A team writes a skill for handling release notes. Which `description` best helps an agent activate it at the right time?",
+    choices: [
+      {
+        id: "a",
+        text: "Generate, edit, and verify release notes from changelogs and merged PRs. Use when asked for release notes, changelog summaries, or release announcements.",
+      },
+      { id: "b", text: "Helps with writing." },
+      { id: "c", text: "Always use this skill for every task in the repository." },
+      { id: "d", text: "Internal process details are intentionally omitted." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "A useful skill description says what the skill does and when to use it. Specific trigger phrases help discovery without causing unrelated tasks to load the skill.",
+    choiceExplanations: {
+      a: "Correct. It combines capability, inputs, and clear activation cues.",
+      b: "Incorrect. This is too vague to distinguish release-note work from other writing.",
+      c: "Incorrect. Over-broad activation wastes context and can conflict with unrelated tasks.",
+      d: "Incorrect. The description is the agent's main discovery signal.",
+    },
+    sources: [
+      {
+        title: "Agent Skills: Specification",
+        url: "https://agentskills.io/specification",
+      },
+      {
+        title: "Agent Skills: Optimizing skill descriptions",
+        url: "https://agentskills.io/skill-creation/optimizing-descriptions",
+      },
+    ],
+  },
+  {
+    id: "claude-code-015",
+    domain: "claude-code",
+    difficulty: "scenario",
+    prompt:
+      "A repository has twenty specialised Agent Skills. What makes this practical without loading every instruction into the model at startup?",
+    choices: [
+      { id: "a", text: "Progressive disclosure: load names and descriptions first, then full skill instructions only when relevant." },
+      { id: "b", text: "Concatenate every `SKILL.md` into the system prompt for every task." },
+      { id: "c", text: "Remove descriptions so the agent has fewer tokens to read." },
+      { id: "d", text: "Store all skill reference files in generated build output." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Progressive disclosure keeps many skills available with a small discovery footprint. The agent loads more detail only after a task matches a skill.",
+    choiceExplanations: {
+      a: "Correct. Discovery metadata is cheap, while full instructions are loaded on demand.",
+      b: "Incorrect. Loading every full skill wastes context and can distract the agent.",
+      c: "Incorrect. Descriptions are needed for accurate activation.",
+      d: "Incorrect. Generated output is not the right source of durable skill context.",
+    },
+    sources: [
+      {
+        title: "Agent Skills: Overview",
+        url: "https://agentskills.io/home",
+      },
+      {
+        title: "Agent Skills: Specification",
+        url: "https://agentskills.io/specification",
+      },
+    ],
+  },
+  {
+    id: "claude-code-016",
+    domain: "claude-code",
+    difficulty: "applied",
+    prompt:
+      "A skill needs detailed API tables and a reusable report template, but the core procedure is short. How should the skill be organised?",
+    choices: [
+      {
+        id: "a",
+        text: "Keep the main `SKILL.md` concise and place detailed documentation or templates in referenced `references/` and `assets/` files.",
+      },
+      { id: "b", text: "Paste every table and template into the main instructions so they always load." },
+      { id: "c", text: "Hide the files outside the skill directory so the agent cannot find them." },
+      { id: "d", text: "Replace the instructions with a single link and no task procedure." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Skills can bundle optional resources. Keeping the core instructions concise and loading references or assets only when needed preserves context while retaining reusable material.",
+    choiceExplanations: {
+      a: "Correct. This follows progressive disclosure and keeps the skill maintainable.",
+      b: "Incorrect. Always loading large reference material wastes context.",
+      c: "Incorrect. Resources should be reachable from the skill when needed.",
+      d: "Incorrect. A skill should still provide actionable procedure, not just a pointer.",
+    },
+    sources: [
+      {
+        title: "Agent Skills: Specification",
+        url: "https://agentskills.io/specification",
+      },
+      {
+        title: "Agent Skills: Best practices",
+        url: "https://agentskills.io/skill-creation/best-practices",
+      },
+    ],
+  },
+  {
+    id: "claude-code-017",
+    domain: "claude-code",
+    difficulty: "scenario",
+    prompt:
+      "A team is deciding whether to create a new Agent Skill after repeatedly correcting agents during incident-summary work. What is the strongest reason to add one?",
+    choices: [
+      {
+        id: "a",
+        text: "The corrections reveal a repeatable, project-specific workflow with edge cases that agents do not reliably infer.",
+      },
+      { id: "b", text: "The task can already be completed reliably without extra instructions." },
+      { id: "c", text: "The team wants to add generic advice such as 'be careful' to every task." },
+      { id: "d", text: "The skill will remove the need to verify incident summaries." },
+    ],
+    correctChoiceId: "a",
+    explanation:
+      "Skills are most valuable when they capture reusable expertise, concrete procedures, and project-specific gotchas that improve repeated agent work.",
+    choiceExplanations: {
+      a: "Correct. Real repeated corrections are strong source material for a useful skill.",
+      b: "Incorrect. If the agent already handles the work well, a skill may add little value.",
+      c: "Incorrect. Generic advice is usually too vague to improve execution.",
+      d: "Incorrect. Skills guide work; they do not replace review or verification.",
+    },
+    sources: [
+      {
+        title: "Agent Skills: Best practices",
+        url: "https://agentskills.io/skill-creation/best-practices",
+      },
+      {
+        title: "Agent Skills: Evaluating skill output quality",
+        url: "https://agentskills.io/skill-creation/evaluating-skills",
+      },
+    ],
+  },
+  {
     id: "prompt-structured-output-007",
     domain: "prompt-structured-output",
     difficulty: "foundation",

@@ -67,6 +67,12 @@ Use these sources to keep the bank balanced across provider-specific implementat
 
 ### Standards, Frameworks, And Security
 
+- Agent Skills overview: https://agentskills.io/home
+- Agent Skills specification: https://agentskills.io/specification
+- Agent Skills quickstart: https://agentskills.io/skill-creation/quickstart
+- Agent Skills best practices: https://agentskills.io/skill-creation/best-practices
+- Agent Skills optimizing descriptions: https://agentskills.io/skill-creation/optimizing-descriptions
+- Agent Skills evaluating skills: https://agentskills.io/skill-creation/evaluating-skills
 - Model Context Protocol introduction: https://modelcontextprotocol.io/docs/getting-started/intro
 - Model Context Protocol tools specification: https://modelcontextprotocol.io/specification/2025-06-18/server/tools
 - LangGraph overview: https://docs.langchain.com/oss/python/langgraph/overview

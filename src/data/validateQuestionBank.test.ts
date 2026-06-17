@@ -86,7 +86,7 @@ describe("validateQuestionBank", () => {
   });
 
   it("ships a useful first practice bank across every domain", () => {
-    expect(questions).toHaveLength(60);
+    expect(questions).toHaveLength(65);
 
     for (const domain of Object.keys(domainLabels) as Array<keyof typeof domainLabels>) {
       expect(getQuestionCountForDomain(domain)).toBeGreaterThanOrEqual(6);
