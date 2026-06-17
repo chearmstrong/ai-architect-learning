@@ -47,7 +47,7 @@ export function SessionReview({ session, onDone }: SessionReviewProps) {
             </li>
           ))}
         </ul>
-        <button className="primary-button" onClick={onDone}>
+        <button className="primary-button review-summary-button" onClick={onDone}>
           Back to dashboard
         </button>
       </div>

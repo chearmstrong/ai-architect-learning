@@ -417,6 +417,10 @@ input:hover {
   gap: 16px;
 }
 
+.review-summary-button {
+  margin-top: 16px;
+}
+
 .review-item {
   border-left: 4px solid #d6912e;
 }
